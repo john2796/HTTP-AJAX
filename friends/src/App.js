@@ -37,7 +37,6 @@ class App extends Component {
       alert("age field is required");
       return;
     }
-
     const newPost = {
       name,
       email,
@@ -48,7 +47,7 @@ class App extends Component {
       .then(res =>
         this.setState({ data: res.data, email: "", name: "", age: 0 })
       )
-      .catch(err => this.setState({ errors: err }));
+      .catch(err => this.setState({ errors: err.response.data }));
   };
 
   componentDidMount() {
@@ -59,19 +58,41 @@ class App extends Component {
     axios
       .get(`${URL}`)
       .then(res => this.setState({ data: res.data }))
-      .catch(err => this.setState({ errors: err }));
+      .catch(err => this.setState({ errors: err.response.data }));
   };
 
   deletePost = id => {
     axios
       .delete(`${URL}/${id}`)
       .then(res => this.setState({ data: res.data }))
-      .catch(err => this.setState({ errors: err }));
+      .catch(err => this.setState({ errors: err.response.data }));
+  };
+
+  updatePost = id => {
+    const { email, name, age } = this.state;
+    if (!name) {
+      alert("field is empty");
+      return;
+    } else if (!validateEmail(email)) {
+      alert("email is not valid");
+      return;
+    } else if (age <= 0) {
+      alert("age field is required");
+      return;
+    }
+    const newPost = {
+      name,
+      email,
+      age
+    };
+    axios
+      .put(`${URL}/${id}`, newPost)
+      .then(res => this.setState({ data: res.data }))
+      .catch(err => this.setState({ errors: err.response.data }));
   };
 
   render() {
-    const { data } = this.state;
-
+    const { data, errors } = this.state;
     const items = data.map(item => {
       return (
         <li key={item.id}>
@@ -79,6 +100,7 @@ class App extends Component {
           <p>{item.email}</p>
           <p>{item.age}</p>
           <button onClick={() => this.deletePost(item.id)}>delete</button>
+          <button onClick={() => this.updatePost(item.id)}>update</button>
         </li>
       );
     });
@@ -114,6 +136,7 @@ class App extends Component {
           <br />
           <button type="submit">submit</button>
         </form>
+        {errors && <h3>{errors.message}</h3>}
         <ul>
           <hr />
           <h1>Lambda Friends</h1>
