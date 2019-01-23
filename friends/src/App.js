@@ -6,7 +6,7 @@ import axios from "axios";
 import FriendForm from "./components/FriendForm";
 import FriendsLists from "./components/FriendsLists";
 import NavBar from "./components/Navbar";
-
+import Friend from "./components/Friend";
 const URL = "http://localhost:5000/friends";
 
 function validateEmail(email) {
@@ -124,6 +124,7 @@ class App extends Component {
                 />
               )}
             />
+            <Route path="/friend/:id" render={props => <Friend {...props} />} />
           </ul>
         </div>
       </Router>
