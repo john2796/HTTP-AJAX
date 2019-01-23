@@ -12,7 +12,7 @@ class App extends Component {
   state = {
     data: [],
     errors: {},
-    age: "",
+    age: 0,
     name: "",
     email: ""
   };
@@ -25,18 +25,29 @@ class App extends Component {
 
   submitHandler = e => {
     e.preventDefault();
-    if (!validateEmail(this.state.email)) {
-      alert("email not valid");
+    const { email, name, age } = this.state;
+
+    if (!name) {
+      alert("field is empty");
+      return;
+    } else if (!validateEmail(email)) {
+      alert("email is not valid");
+      return;
+    } else if (age <= 0) {
+      alert("age field is required");
+      return;
     }
+
     const newPost = {
-      age: this.state.age,
-      name: this.state.name,
-      email: this.state.email
+      name,
+      email,
+      age
     };
-    console.log(newPost);
     axios
       .post(`${URL}`, newPost)
-      .then(res => this.setState({ data: res.data }))
+      .then(res =>
+        this.setState({ data: res.data, email: "", name: "", age: 0 })
+      )
       .catch(err => this.setState({ errors: err }));
   };
 
@@ -60,12 +71,13 @@ class App extends Component {
 
   render() {
     const { data } = this.state;
+
     const items = data.map(item => {
       return (
         <li key={item.id}>
-          <p>{item.age}</p>
-          <p>{item.email}</p>
           <p>{item.name}</p>
+          <p>{item.email}</p>
+          <p>{item.age}</p>
           <button onClick={() => this.deletePost(item.id)}>delete</button>
         </li>
       );
@@ -91,7 +103,9 @@ class App extends Component {
           />{" "}
           <br />
           <input
-            type="text"
+            type="number"
+            min="0"
+            max="100"
             name="age"
             placeholder="age"
             onChange={this.changeHandler}
@@ -102,7 +116,7 @@ class App extends Component {
         </form>
         <ul>
           <hr />
-          <h1>Lambda Councils</h1>
+          <h1>Lambda Friends</h1>
           {items}
         </ul>
       </div>
