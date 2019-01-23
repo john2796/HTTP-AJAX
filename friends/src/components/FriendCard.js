@@ -5,10 +5,9 @@ import {
   CardText,
   CardBody,
   CardTitle,
-  CardSubtitle,
-  Button
+  CardSubtitle
 } from "reactstrap";
-const FriendCard = ({ item, deletePost, updatePost }) => {
+const FriendCard = ({ item }) => {
   return (
     <Card>
       <CardImg
@@ -21,8 +20,6 @@ const FriendCard = ({ item, deletePost, updatePost }) => {
         <CardTitle>{item.name}</CardTitle>
         <CardSubtitle>{item.email}</CardSubtitle>
         <CardText>{item.age}</CardText>
-        <Button onClick={() => deletePost(item.id)}>delete</Button>
-        <Button onClick={() => updatePost(item.id)}>update</Button>
       </CardBody>
     </Card>
   );

@@ -1,23 +1,23 @@
 import React, { Component } from "react";
 import FriendCard from "./FriendCard";
 import axios from "axios";
-
+import { Button } from "reactstrap";
 class Friend extends Component {
   state = {
     friends: null
   };
 
   componentDidMount() {
-    this.fetchMovie(this.props.match.params.id);
+    this.fetchFriends(this.props.match.params.id);
   }
 
   componentWillReceiveProps(nextProp) {
     if (this.props.match.params.id !== nextProp.match.params.id) {
-      this.fetchMovie(nextProp.match.params.id);
+      this.fetchFriends(nextProp.match.params.id);
     }
   }
 
-  fetchMovie = id => {
+  fetchFriends = id => {
     axios
       .get(`http://localhost:5000/friends/${id}`)
       .then(response => {
@@ -29,6 +29,9 @@ class Friend extends Component {
   };
 
   render() {
+    if (!this.state.friends) {
+      return <div>Loading friends information...</div>;
+    }
     return (
       <div>
         <FriendCard item={this.state.friends} />
