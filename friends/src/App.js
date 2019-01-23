@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import "./App.css";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+
 import axios from "axios";
+import FriendForm from "./components/FriendForm";
+import FriendsLists from "./components/FriendsLists";
+import NavBar from "./components/Navbar";
 
 const URL = "http://localhost:5000/friends";
 
@@ -16,17 +21,14 @@ class App extends Component {
     name: "",
     email: ""
   };
-
   changeHandler = e => {
     this.setState({
       [e.target.name]: e.target.value
     });
   };
-
   submitHandler = e => {
     e.preventDefault();
     const { email, name, age } = this.state;
-
     if (!name) {
       alert("field is empty");
       return;
@@ -47,27 +49,24 @@ class App extends Component {
       .then(res =>
         this.setState({ data: res.data, email: "", name: "", age: 0 })
       )
+      .then(() => alert("message has been added"))
       .catch(err => this.setState({ errors: err.response.data }));
   };
-
   componentDidMount() {
     this.fetchData();
   }
-
   fetchData = () => {
     axios
       .get(`${URL}`)
       .then(res => this.setState({ data: res.data }))
       .catch(err => this.setState({ errors: err.response.data }));
   };
-
   deletePost = id => {
     axios
       .delete(`${URL}/${id}`)
       .then(res => this.setState({ data: res.data }))
       .catch(err => this.setState({ errors: err.response.data }));
   };
-
   updatePost = id => {
     const { email, name, age } = this.state;
     if (!name) {
@@ -77,72 +76,57 @@ class App extends Component {
       alert("email is not valid");
       return;
     } else if (age <= 0) {
-      alert("age field is required");
+      alert("age field is required to update");
       return;
     }
-    const newPost = {
+    const updatePost = {
       name,
       email,
       age
     };
     axios
-      .put(`${URL}/${id}`, newPost)
+      .put(`${URL}/${id}`, updatePost)
       .then(res => this.setState({ data: res.data }))
       .catch(err => this.setState({ errors: err.response.data }));
   };
 
   render() {
-    const { data, errors } = this.state;
-    const items = data.map(item => {
-      return (
-        <li key={item.id}>
-          <p>{item.name}</p>
-          <p>{item.email}</p>
-          <p>{item.age}</p>
-          <button onClick={() => this.deletePost(item.id)}>delete</button>
-          <button onClick={() => this.updatePost(item.id)}>update</button>
-        </li>
-      );
-    });
+    const { data, errors, age, name, email } = this.state;
     return (
-      <div className="App">
-        <form onSubmit={this.submitHandler}>
-          <p>Form</p>
-          <input
-            type="text"
-            name="name"
-            placeholder="name"
-            onChange={this.changeHandler}
-            value={this.state.name}
-          />{" "}
-          <br />
-          <input
-            type="text"
-            name="email"
-            placeholder="email"
-            onChange={this.changeHandler}
-            value={this.state.email}
-          />{" "}
-          <br />
-          <input
-            type="number"
-            min="0"
-            max="100"
-            name="age"
-            placeholder="age"
-            onChange={this.changeHandler}
-            value={this.state.age}
-          />{" "}
-          <br />
-          <button type="submit">submit</button>
-        </form>
-        {errors && <h3>{errors.message}</h3>}
-        <ul>
-          <hr />
-          <h1>Lambda Friends</h1>
-          {items}
-        </ul>
-      </div>
+      <Router>
+        <div className="App">
+          <NavBar />
+          <Route
+            path="/form"
+            render={props => (
+              <FriendForm
+                {...props}
+                submitHandler={this.submitHandler}
+                changeHandler={this.changeHandler}
+                age={age}
+                name={name}
+                email={email}
+              />
+            )}
+          />
+          {errors && <h3>{errors.message}</h3>}
+          <ul>
+            <hr />
+            <Route
+              path="/"
+              exact
+              render={props => (
+                <FriendsLists
+                  {...props}
+                  data={data}
+                  deletePost={this.deletePost}
+                  updatePost={this.updatePost}
+                />
+              )}
+            />
+          </ul>
+        </div>
+      </Router>
     );
   }
 }
