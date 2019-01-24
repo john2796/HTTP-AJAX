@@ -1,15 +1,26 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import FriendCard from "./FriendCard";
 
-const FriendsLists = ({ data }) => {
+const FriendsLists = ({ data, deletePost, updatePost }) => {
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        margin: "0 auto",
+        justifyContent: "center",
+        alignItems: "center"
+      }}
+    >
       {data.map(item => {
         return (
-          <Link to={`/friend/${item.id}`} key={item.id}>
-            <FriendCard item={item} />
-          </Link>
+          <div key={item.id}>
+            <FriendCard
+              item={item}
+              deletePost={deletePost}
+              updatePost={updatePost}
+            />
+          </div>
         );
       })}
     </div>

@@ -1,37 +1,48 @@
 import React from "react";
+import { InputGroup, InputGroupText, InputGroupAddon, Input } from "reactstrap";
 
-const FriendForm = ({ submitHandler, age, name, email, changeHandler }) => {
+const FriendForm = ({ age, name, email, changeHandler }) => {
   return (
     <div>
-      <form onSubmit={submitHandler}>
-        <p>Form</p>
-        <input
-          type="text"
-          name="name"
-          placeholder="name"
-          onChange={changeHandler}
-          value={name}
-        />{" "}
+      <form>
+        <InputGroup>
+          <InputGroupAddon addonType="prepend">
+            <InputGroupText>name</InputGroupText>
+          </InputGroupAddon>
+          <Input
+            type="text"
+            name="name"
+            onChange={changeHandler}
+            value={name}
+          />
+        </InputGroup>
         <br />
-        <input
-          type="text"
-          name="email"
-          placeholder="email"
-          onChange={changeHandler}
-          value={email}
-        />{" "}
+        <InputGroup>
+          <InputGroupAddon addonType="prepend">
+            <InputGroupText>email</InputGroupText>
+          </InputGroupAddon>
+          <Input
+            type="text"
+            name="email"
+            onChange={changeHandler}
+            value={email}
+          />
+        </InputGroup>
         <br />
-        <input
-          type="number"
-          min="0"
-          max="100"
-          name="age"
-          placeholder="age"
-          onChange={changeHandler}
-          value={age}
-        />{" "}
+        <InputGroup>
+          <InputGroupAddon addonType="prepend">
+            <InputGroupText>age</InputGroupText>
+          </InputGroupAddon>
+          <Input
+            type="number"
+            min="0"
+            max="100"
+            name="age"
+            onChange={changeHandler}
+            value={age}
+          />
+        </InputGroup>
         <br />
-        <button type="submit">submit</button>
       </form>
     </div>
   );
